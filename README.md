@@ -1,7 +1,7 @@
 <h1>📌 Git 협업 규칙</h1>
 
 <h2>1. 브랜치 전략</h2>
-<p>본 프로젝트는 <strong>GitHub Flow</strong> 기반으로 진행합니다.</p>
+<p>본 프로젝트는 <strong>GitHub Flow</strong> 기반으로 진행한다.</p>
 
 <h3>브랜치 구조</h3>
 <table>
