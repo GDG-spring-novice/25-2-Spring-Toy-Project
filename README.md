@@ -103,21 +103,6 @@ refactor/like-controller
 [refactor] PostService 구조 개선
 </pre>
 
-<h3>PR 설명 템플릿</h3>
-<pre>
-## 개요
-- 구현한 기능 또는 수정 내용 요약
-
-## 상세 내용
-- 변경된 로직/파일 상세 설명
-
-## 테스트 결과
-- Postman/Swagger 테스트 결과 첨부
-
-## 기타
-- 추가 개선 사항
-</pre>
-
 <hr>
 
 <h2>6. 폴더 구조 (예시)</h2>
