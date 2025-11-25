@@ -1,11 +1,7 @@
 package chaewonan.springbootdeveloper.domain;
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import lombok.Builder;
 
 import java.sql.Timestamp;
 
@@ -29,7 +25,7 @@ public class Like {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 좋아요 누른 게시글
+    // 좋아요 대상 게시글
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Article post;
