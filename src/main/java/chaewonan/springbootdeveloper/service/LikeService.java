@@ -18,6 +18,7 @@ public class LikeService {
     private final UserRepository userRepository;
     private final BlogRepository blogRepository;
 
+    //좋아요 누름
     @Transactional
     public void like(Long postId, String userEmail) {
 
@@ -40,6 +41,7 @@ public class LikeService {
         likeRepository.save(like);
     }
 
+    //좋아요 취소함
     @Transactional
     public void unlike(Long postId, String userEmail) {
 
