@@ -1,6 +1,6 @@
-package chaewonan.springbootdeveloper.controller;
-
-public class LikeController {
-
-    private final
-}
+//package chaewonan.springbootdeveloper.controller;
+//
+//public class LikeController {
+//
+//    private final
+//}
