@@ -9,11 +9,9 @@ public class ArticleResponse {
 
     private final String title;
     private final String content;
-    private final int likeCount; // 추가!
 
-    public ArticleResponse(Article article, int likeCount) {
+    public ArticleResponse(Article article) {
         this.title = article.getTitle();
         this.content = article.getContent();
-        this.likeCount = likeCount;
     }
 }

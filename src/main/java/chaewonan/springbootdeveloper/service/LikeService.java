@@ -61,4 +61,16 @@ public class LikeService {
 
         likeRepository.delete(like);
     }
+
+    public boolean isLikedByMe(Long postId) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + username));
+
+        Article article = blogRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("post not found: " + postId));
+
+        return likeRepository.findByUserAndPost(user, article).isPresent();
+    }
 }
