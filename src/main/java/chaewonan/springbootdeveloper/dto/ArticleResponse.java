@@ -3,6 +3,7 @@ package chaewonan.springbootdeveloper.dto;
 import chaewonan.springbootdeveloper.domain.Article;
 import lombok.Getter;
 
+
 @Getter
 public class ArticleResponse {
 
