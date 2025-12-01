@@ -8,24 +8,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 public class BlogService {
 
     private final BlogRepository blogRepository;
-    private final ImageService imageService;
 
     public Article save(AddArticleRequest request, List<MultipartFile> images, String author) {
+        List<String> imageUrls = saveImages(images);
 
-        Article article = blogRepository.save(request.toEntity(author));
+        Article article = Article.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .author(author)
+                .imageUrls(imageUrls)
+                .build();
 
-        if (images != null && !images.isEmpty()) {
-            imageService.saveImages(images, article);
-        }
-
-        return article;
+        return blogRepository.save(article);
     }
 
     public List<Article> findAll() {
@@ -47,5 +52,30 @@ public class BlogService {
 
         article.update(request.getTitle(), request.getContent());
         return blogRepository.save(article);
+    }
+
+    private List<String> saveImages(List<MultipartFile> images) {
+        List<String> urls = new ArrayList<>();
+        if (images == null || images.isEmpty()) return urls;
+
+        String uploadDir = "src/main/resources/static/uploads/";
+
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        for (MultipartFile file : images) {
+            if (file.isEmpty()) continue;
+
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            File dest = new File(uploadDir + fileName);
+
+            try {
+                file.transferTo(dest);
+                urls.add("/uploads/" + fileName);
+            } catch (IOException e) {
+                throw new RuntimeException("image upload failed");
+            }
+        }
+        return urls;
     }
 }
