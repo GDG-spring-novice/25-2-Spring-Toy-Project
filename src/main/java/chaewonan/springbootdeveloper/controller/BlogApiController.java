@@ -8,9 +8,12 @@ import chaewonan.springbootdeveloper.service.BlogService;
 import chaewonan.springbootdeveloper.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,12 +25,16 @@ public class BlogApiController {
     private final LikeService likeService;
 
     // 게시글 생성
-    @PostMapping
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request,
-                                              java.security.Principal principal) {
-        Article savedArticle = blogService.save(request, principal.getName());
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Article> addArticle(
+            @RequestPart("data") AddArticleRequest request,
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            Principal principal
+    ) {
+        Article savedArticle = blogService.save(request, images, principal.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
     }
+
 
     // 게시글 전체 조회
     @GetMapping
