@@ -15,10 +15,17 @@ import java.util.List;
 public class BlogService {
 
     private final BlogRepository blogRepository;
+    private final ImageService imageService;
 
     public Article save(AddArticleRequest request, List<MultipartFile> images, String author) {
-        Article article = request.toEntity(author);
-        return blogRepository.save(article);
+
+        Article article = blogRepository.save(request.toEntity(author));
+
+        if (images != null && !images.isEmpty()) {
+            imageService.saveImages(images, article);
+        }
+
+        return article;
     }
 
     public List<Article> findAll() {
@@ -37,6 +44,7 @@ public class BlogService {
     public Article update(Long id, UpdateArticleRequest request) {
         Article article = blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
+
         article.update(request.getTitle(), request.getContent());
         return blogRepository.save(article);
     }
