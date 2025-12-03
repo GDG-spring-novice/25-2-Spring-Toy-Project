@@ -78,6 +78,7 @@ public class BlogApiController {
     @GetMapping("/{id}/likes/me")
     public ResponseEntity<Boolean> isLikedByMe(@PathVariable Long id) {
         boolean liked = likeService.isLikedByMe(id);
+        System.out.println(liked);
         return ResponseEntity.ok(liked);
     }
 }
