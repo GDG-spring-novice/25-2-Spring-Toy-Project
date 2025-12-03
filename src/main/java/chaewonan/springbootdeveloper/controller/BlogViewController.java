@@ -4,6 +4,7 @@ import chaewonan.springbootdeveloper.domain.Article;
 import chaewonan.springbootdeveloper.dto.ArticleListViewResponse;
 import chaewonan.springbootdeveloper.dto.ArticleViewResponse;
 import chaewonan.springbootdeveloper.service.BlogService;
+import chaewonan.springbootdeveloper.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ public class BlogViewController {
     public String getArticle(@PathVariable Long id, Model model) {
         Article article = blogService.findById(id);
         model.addAttribute("article", new ArticleViewResponse(article));
+        model.addAttribute("liked");
         return "article";
     }
 

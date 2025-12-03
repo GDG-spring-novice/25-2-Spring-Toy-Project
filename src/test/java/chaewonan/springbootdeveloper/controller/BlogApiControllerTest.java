@@ -1,6 +1,7 @@
 package chaewonan.springbootdeveloper.controller;
 
 import chaewonan.springbootdeveloper.domain.User;
+import chaewonan.springbootdeveloper.repository.LikeRepository;
 import chaewonan.springbootdeveloper.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import chaewonan.springbootdeveloper.domain.Article;
@@ -55,10 +56,14 @@ class BlogApiControllerTest {
 
     User user;
 
+    @Autowired
+    LikeRepository likeRepository;
+
     @BeforeEach
     public void mockMvcSetUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .build();
+        likeRepository.deleteAll();
         blogRepository.deleteAll();
     }
 
@@ -176,5 +181,50 @@ class BlogApiControllerTest {
                 .author(user.getUsername())
                 .content("content")
                 .build());
+    }
+
+    @DisplayName("likeArticle: 좋아요 추가에 성공한다.")
+    @Test
+    public void likeArticle() throws Exception {
+
+        // given
+        Article savedArticle = createDefaultArticle();
+        final String url = "/api/articles/" + savedArticle.getId() + "/like";
+
+        // when
+        ResultActions result = mockMvc.perform(post(url));
+
+        // then
+        result.andExpect(status().isOk());
+
+        // DB 검증
+        assertThat(likeRepository.findByUserAndPost(user, savedArticle).isPresent()).isTrue();
+    }
+
+    @DisplayName("unlikeArticle: 좋아요 취소에 성공한다.")
+    @Test
+    public void unlikeArticle() throws Exception {
+
+        // given
+        Article savedArticle = createDefaultArticle();
+
+        // 먼저 좋아요 생성
+        likeRepository.save(
+                chaewonan.springbootdeveloper.domain.Like.builder()
+                        .post(savedArticle)
+                        .user(user)
+                        .build()
+        );
+
+        final String url = "/api/articles/" + savedArticle.getId() + "/like";
+
+        // when
+        ResultActions result = mockMvc.perform(delete(url));
+
+        // then
+        result.andExpect(status().isOk());
+
+        // DB 검증
+        assertThat(likeRepository.findByUserAndPost(user, savedArticle).isPresent()).isFalse();
     }
 }

@@ -13,7 +13,7 @@ if (deleteButton) {
             location.replace('/articles');
         }
 
-        httpRequest('DELETE',`/api/articles/${id}`, null, success, fail);
+        httpRequest('DELETE', `/api/articles/${id}`, null, success, fail);
     });
 }
 
@@ -39,7 +39,7 @@ if (modifyButton) {
             location.replace(`/articles/${id}`);
         }
 
-        httpRequest('PUT',`/api/articles/${id}`, body, success, fail);
+        httpRequest('PUT', `/api/articles/${id}`, body, success, fail);
     });
 }
 
@@ -60,7 +60,7 @@ if (createButton) {
             location.replace('/articles');
         };
 
-        httpRequest('POST','/api/articles', body, success, fail)
+        httpRequest('POST', '/api/articles', body, success, fail)
     });
 }
 
@@ -70,7 +70,6 @@ if (logoutButton) {
     logoutButton.addEventListener('click', event => {
         function success() {
             localStorage.removeItem('access_token');
-
             deleteCookie('refresh_token');
             location.replace('/login');
         }
@@ -78,9 +77,41 @@ if (logoutButton) {
             alert('로그아웃 실패했습니다.');
         }
 
-        httpRequest('DELETE','/api/refresh-token', null, success, fail);
+        httpRequest('DELETE', '/api/refresh-token', null, success, fail);
     });
 }
+
+/* -------------------------------------------
+    ❤️ 좋아요 기능 추가
+------------------------------------------- */
+
+document.addEventListener("DOMContentLoaded", function () {
+    const likeBtn = document.getElementById("like-btn");
+    const articleId = document.getElementById("article-id").value;
+
+    likeBtn.addEventListener("click", () => {
+        const liked = likeBtn.classList.contains("liked");
+
+        const url = `/api/articles/${articleId}/like`;
+        const method = liked ? "DELETE" : "POST";
+
+        function success() {
+            likeBtn.classList.toggle("liked");
+            likeBtn.classList.toggle("not-liked");
+        }
+
+        function fail() {
+            alert("좋아요 처리 실패!");
+        }
+
+        httpRequest(method, url, null, success, fail);
+    });
+});
+
+
+/* -------------------------------------------
+    인증 + 요청 함수
+------------------------------------------- */
 
 function getCookie(key) {
     var result = null;
