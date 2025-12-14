@@ -2,6 +2,7 @@
 /shelf/
 /workspace.xml
 
+application.yml
 # Gradle
 .gradle/
 build/
