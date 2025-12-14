@@ -27,19 +27,14 @@ public class Article {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ElementCollection
-    @CollectionTable(name = "article_images", joinColumns = @JoinColumn(name = "article_id"))
-    @Column(name = "image_url")
-    private List<String> imageUrls = new ArrayList<>();
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ArticleImage> images = new ArrayList<>();
 
     @Builder
-    public Article(String title, String content, String author, List<String> imageUrls) {
+    public Article(String title, String content, String author) {
         this.title = title;
         this.content = content;
         this.author = author;
-        if (imageUrls != null) {
-            this.imageUrls = imageUrls;
-        }
     }
 
     public void update(String title, String content) {
@@ -47,7 +42,13 @@ public class Article {
         this.content = content;
     }
 
-    public void setImageUrls(List<String> imageUrls) {
-        this.imageUrls = imageUrls;
+    public void addImage(ArticleImage image) {
+        images.add(image);
+        image.setArticle(this);
+    }
+
+    public void removeImage(ArticleImage image) {
+        images.remove(image);
+        image.setArticle(null);
     }
 }

@@ -15,12 +15,11 @@ public class BlogService {
 
     private final BlogRepository blogRepository;
 
-    public Article save(AddArticleRequest request, String author, List<String> imageUrls) {
+    public Article save(AddArticleRequest request, String author) {
         Article article = Article.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .author(author)
-                .imageUrls(imageUrls)
                 .build();
         return blogRepository.save(article);
     }
@@ -35,15 +34,8 @@ public class BlogService {
     }
 
     public Article update(Long id, UpdateArticleRequest request) {
-        Article article = blogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
-        article.update(request.getTitle(), request.getContent());
-        return blogRepository.save(article);
-    }
-
-    public Article updateImages(Long id, List<String> imageUrls) {
         Article article = findById(id);
-        article.setImageUrls(imageUrls);
+        article.update(request.getTitle(), request.getContent());
         return blogRepository.save(article);
     }
 
