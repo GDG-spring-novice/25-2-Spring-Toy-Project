@@ -2,7 +2,14 @@
 /shelf/
 /workspace.xml
 
-/.gradle/
-/build/
-
 application.yml
+# Gradle
+.gradle/
+build/
+
+# IntelliJ
+.idea/
+*.iml
+
+# OS
+.DS_Store
