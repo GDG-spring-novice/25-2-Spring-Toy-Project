@@ -12,18 +12,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ImageService {
 
     private final ArticleImageRepository imageRepository;
-    private final String uploadPath = "uploads/";
+    private final String uploadPath =
+            System.getProperty("user.dir") + "/uploads/";
 
     public void saveImages(List<MultipartFile> images, Article article) {
         for (MultipartFile file : images) {
+
             String original = file.getOriginalFilename();
-            String ext = original.substring(original.lastIndexOf("."));
-            String filename = UUID.randomUUID().toString() + ext;
+            String ext = "";
+
+            if (original != null && original.contains(".")) {
+                ext = original.substring(original.lastIndexOf("."));
+            }
+
+            String filename = UUID.randomUUID() + ext;
+
             File dest = new File(uploadPath + filename);
             dest.getParentFile().mkdirs();
 
@@ -39,3 +47,4 @@ public class ImageService {
         }
     }
 }
+
