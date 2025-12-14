@@ -1,8 +1,6 @@
 package chaewonan.springbootdeveloper.service;
 
 import chaewonan.springbootdeveloper.domain.Article;
-import chaewonan.springbootdeveloper.dto.AddArticleRequest;
-import chaewonan.springbootdeveloper.dto.UpdateArticleRequest;
 import chaewonan.springbootdeveloper.repository.BlogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,10 +13,10 @@ public class BlogService {
 
     private final BlogRepository blogRepository;
 
-    public Article save(AddArticleRequest request, String author) {
+    public Article save(String title, String content, String author) {
         Article article = Article.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
+                .title(title)
+                .content(content)
                 .author(author)
                 .build();
         return blogRepository.save(article);
@@ -33,9 +31,9 @@ public class BlogService {
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    public Article update(Long id, UpdateArticleRequest request) {
+    public Article update(Long id, String title, String content) {
         Article article = findById(id);
-        article.update(request.getTitle(), request.getContent());
+        article.update(title, content);
         return blogRepository.save(article);
     }
 
