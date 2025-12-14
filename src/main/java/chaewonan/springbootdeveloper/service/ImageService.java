@@ -43,7 +43,6 @@ public class ImageService {
 
             ArticleImage image = new ArticleImage("/uploads/" + filename);
             article.addImage(image);
-            imageRepository.save(image);
         }
     }
 }
