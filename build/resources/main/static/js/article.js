@@ -7,13 +7,11 @@ if (deleteButton) {
             alert('삭제가 완료되었습니다.');
             location.replace('/articles');
         }
-
         function fail() {
             alert('삭제 실패했습니다.');
             location.replace('/articles');
         }
-
-        httpRequest('DELETE',`/api/articles/${id}`, null, success, fail);
+        httpRequest('DELETE', `/api/articles/${id}`, null, success, fail);
     });
 }
 
@@ -23,23 +21,22 @@ if (modifyButton) {
     modifyButton.addEventListener('click', event => {
         let params = new URLSearchParams(location.search);
         let id = params.get('id');
-
-        body = JSON.stringify({
-            title: document.getElementById('title').value,
-            content: document.getElementById('content').value
-        })
-
+        const formData = new FormData();
+        formData.append('title', document.getElementById('title').value);
+        formData.append('content', document.getElementById('content').value);
+        const files = document.getElementById('images').files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images', files[i]);
+        }
         function success() {
             alert('수정 완료되었습니다.');
             location.replace(`/articles/${id}`);
         }
-
         function fail() {
             alert('수정 실패했습니다.');
             location.replace(`/articles/${id}`);
         }
-
-        httpRequest('PUT',`/api/articles/${id}`, body, success, fail);
+        httpRequest('PUT', `/api/articles/${id}`, formData, success, fail, true);
     });
 }
 
@@ -47,20 +44,22 @@ const createButton = document.getElementById('create-btn');
 
 if (createButton) {
     createButton.addEventListener('click', event => {
-        body = JSON.stringify({
-            title: document.getElementById('title').value,
-            content: document.getElementById('content').value
-        });
+        const formData = new FormData();
+        formData.append('title', document.getElementById('title').value);
+        formData.append('content', document.getElementById('content').value);
+        const files = document.getElementById('images').files;
+        for (let i = 0; i < files.length; i++) {
+            formData.append('images', files[i]);
+        }
         function success() {
             alert('등록 완료되었습니다.');
             location.replace('/articles');
-        };
+        }
         function fail() {
             alert('등록 실패했습니다.');
             location.replace('/articles');
-        };
-
-        httpRequest('POST','/api/articles', body, success, fail)
+        }
+        httpRequest('POST', '/api/articles', formData, success, fail, true);
     });
 }
 
@@ -70,15 +69,13 @@ if (logoutButton) {
     logoutButton.addEventListener('click', event => {
         function success() {
             localStorage.removeItem('access_token');
-
             deleteCookie('refresh_token');
             location.replace('/login');
         }
         function fail() {
             alert('로그아웃 실패했습니다.');
         }
-
-        httpRequest('DELETE','/api/refresh-token', null, success, fail);
+        httpRequest('DELETE', '/api/refresh-token', null, success, fail);
     });
 }
 
@@ -87,15 +84,12 @@ function getCookie(key) {
     var cookie = document.cookie.split(';');
     cookie.some(function (item) {
         item = item.replace(' ', '');
-
         var dic = item.split('=');
-
         if (key === dic[0]) {
             result = dic[1];
             return true;
         }
     });
-
     return result;
 }
 
@@ -103,14 +97,17 @@ function deleteCookie(name) {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-function httpRequest(method, url, body, success, fail) {
+function httpRequest(method, url, body, success, fail, formDataFlag = false) {
+    let headers = {
+        Authorization: 'Bearer ' + localStorage.getItem('access_token'),
+    };
+    if (!formDataFlag) {
+        headers['Content-Type'] = 'application/json';
+    }
     fetch(url, {
         method: method,
-        headers: {
-            Authorization: 'Bearer ' + localStorage.getItem('access_token'),
-            'Content-Type': 'application/json',
-        },
-        body: body,
+        headers: headers,
+        body: bodyFlag(body, formDataFlag),
     }).then(response => {
         if (response.status === 200 || response.status === 201) {
             return success();
@@ -123,22 +120,22 @@ function httpRequest(method, url, body, success, fail) {
                     Authorization: 'Bearer ' + localStorage.getItem('access_token'),
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    refreshToken: getCookie('refresh_token'),
-                }),
+                body: JSON.stringify({ refreshToken: refresh_token }),
             })
-                .then(res => {
-                    if (res.ok) {
-                        return res.json();
-                    }
-                })
+                .then(res => res.ok ? res.json() : Promise.reject())
                 .then(result => {
                     localStorage.setItem('access_token', result.accessToken);
-                    httpRequest(method, url, body, success, fail);
+                    httpRequest(method, url, body, success, fail, formDataFlag);
                 })
-                .catch(error => fail());
+                .catch(() => fail());
         } else {
             return fail();
         }
-    });
+    }).catch(() => fail());
+}
+
+function bodyFlag(body, formDataFlag) {
+    if (!body) return null;
+    if (formDataFlag) return body;
+    return JSON.stringify(body);
 }
