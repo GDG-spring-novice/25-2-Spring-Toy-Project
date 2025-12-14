@@ -56,12 +56,15 @@ public class BlogService {
         Article article = findById(id);
         article.update(title, content);
 
+        article.getImages().clear();
+
         if (images != null && !images.isEmpty()) {
             imageService.saveImages(images, article);
         }
 
         return article;
     }
+
 
     public void delete(Long id) {
         blogRepository.deleteById(id);
