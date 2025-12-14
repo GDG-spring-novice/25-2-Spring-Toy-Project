@@ -2,9 +2,9 @@ package chaewonan.springbootdeveloper.controller;
 
 import chaewonan.springbootdeveloper.domain.Article;
 import chaewonan.springbootdeveloper.service.BlogService;
-import chaewonan.springbootdeveloper.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,40 +18,33 @@ import java.util.List;
 public class BlogApiController {
 
     private final BlogService blogService;
-    private final ImageService imageService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Article> addArticle(
             @RequestParam String title,
             @RequestParam String content,
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             Principal principal
     ) {
-        String author = principal.getName();
+        Article article = blogService.save(
+                title,
+                content,
+                principal.getName(),
+                images
+        );
 
-        Article savedArticle = blogService.save(title, content, author);
-
-        if (images != null && !images.isEmpty()) {
-            imageService.saveImages(images, savedArticle);
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
+        return ResponseEntity.status(HttpStatus.CREATED).body(article);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Article> updateArticle(
             @PathVariable Long id,
             @RequestParam String title,
             @RequestParam String content,
             @RequestParam(value = "images", required = false) List<MultipartFile> images
     ) {
-        Article updatedArticle = blogService.update(id, title, content);
-
-        if (images != null && !images.isEmpty()) {
-            imageService.saveImages(images, updatedArticle);
-        }
-
-        return ResponseEntity.ok(updatedArticle);
+        Article article = blogService.update(id, title, content, images);
+        return ResponseEntity.ok(article);
     }
 
     @DeleteMapping("/{id}")
