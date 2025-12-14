@@ -4,55 +4,50 @@ import chaewonan.springbootdeveloper.domain.Article;
 import chaewonan.springbootdeveloper.dto.AddArticleRequest;
 import chaewonan.springbootdeveloper.dto.UpdateArticleRequest;
 import chaewonan.springbootdeveloper.repository.BlogRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class BlogService {
 
     private final BlogRepository blogRepository;
 
-    public Article save(AddArticleRequest request, String userName) {
-        return blogRepository.save(request.toEntity(userName));
+    public Article save(AddArticleRequest request, String author, List<String> imageUrls) {
+        Article article = Article.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .author(author)
+                .imageUrls(imageUrls)
+                .build();
+        return blogRepository.save(article);
     }
 
     public List<Article> findAll() {
         return blogRepository.findAll();
     }
 
-    public Article findById(long id) {
+    public Article findById(Long id) {
         return blogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
     }
 
-    public void delete(long id) {
+    public Article update(Long id, UpdateArticleRequest request) {
         Article article = blogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
-
-        authorizeArticleAuthor(article);
-        blogRepository.delete(article);
-    }
-
-    @Transactional
-    public Article update(long id, UpdateArticleRequest request) {
-        Article article = blogRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
-
-        authorizeArticleAuthor(article);
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
         article.update(request.getTitle(), request.getContent());
-
-        return article;
+        return blogRepository.save(article);
     }
 
-    private static void authorizeArticleAuthor(Article article) {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!article.getAuthor().equals(userName)) {
-            throw new IllegalArgumentException("not authorized");
-        }
+    public Article updateImages(Long id, List<String> imageUrls) {
+        Article article = findById(id);
+        article.setImageUrls(imageUrls);
+        return blogRepository.save(article);
+    }
+
+    public void delete(Long id) {
+        blogRepository.deleteById(id);
     }
 }
