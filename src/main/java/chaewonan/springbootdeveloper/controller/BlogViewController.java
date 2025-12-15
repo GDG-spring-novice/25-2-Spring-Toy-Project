@@ -20,7 +20,7 @@ import java.util.List;
 public class BlogViewController {
 
     private final BlogService blogService;
-    private final LikeService likeService;    // ⭐ 추가!
+    private final LikeService likeService;
 
     @GetMapping("/articles")
     public String getArticles(Model model) {
