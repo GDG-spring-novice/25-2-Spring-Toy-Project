@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <title>Blog Article</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<<<<<<< HEAD
+
+    <style>
+        /* 좋아요 하트 스타일 */
+        .like-btn {
+            font-size: 30px;
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s ease-in-out;
+        }
+        .liked {
+            color: red;
+        }
+        .not-liked {
+            color: #bbb;
+=======
     <style>
         body {
             background-color: #f8f9fa;
@@ -32,21 +48,58 @@
         .btn {
             border-radius: 2rem;
             padding: 0.35rem 1.1rem;
+>>>>>>> origin/main
         }
     </style>
 </head>
 <body>
+<<<<<<< HEAD
+<div class="p-5 mb-5 text-center bg-light">
+    <h1 class="mb-3">My Blog</h1>
+    <h4 class="mb-3">Welcome to my blog!</h4>
+=======
 
 <!-- Header -->
 <div class="py-5 mb-5 text-center blog-header">
     <h1 class="mb-2">My Blog</h1>
     <p class="mb-0">Welcome to my blog!</p>
+>>>>>>> origin/main
 </div>
 
 <!-- Article -->
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-8">
+<<<<<<< HEAD
+            <article>
+                <input type="hidden" id="article-id" th:value="${article.id}">
+
+                <header class="mb-4">
+                    <h1 class="fw-bolder mb-1" th:text="${article.title}"></h1>
+                    <div class="text-muted fst-italic mb-2"
+                         th:text="|Posted on ${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')} By ${article.author}|"></div>
+                </header>
+
+                <section class="mb-5">
+                    <p class="fs-5 mb-4" th:text="${article.content}"></p>
+                </section>
+
+                <!-- 좋아요 버튼 (UI만 추가된 부분) -->
+                <div class="mb-3">
+                    <span id="like-btn"
+                          class="like-btn"
+                          th:classappend="${liked} ? 'liked' : 'not-liked'">
+                        ♥
+                    </span>
+                </div>
+
+                <button type="button" id="modify-btn"
+                        th:onclick="|location.href='@{/new-article?id={articleId} (articleId=${article.id})}'|"
+                        class="btn btn-primary btn-sm">Edit</button>
+                <button type="button" id="delete-btn"
+                        class="btn btn-secondary btn-sm">Delete</button>
+            </article>
+=======
             <div class="card shadow-sm article-card">
                 <div class="card-body">
                     <article>
@@ -81,10 +134,12 @@
                     </article>
                 </div>
             </div>
+>>>>>>> origin/main
         </div>
     </div>
 </div>
 
 <script src="/js/article.js"></script>
+<script src="/js/token.js"></script>
 </body>
 </html>

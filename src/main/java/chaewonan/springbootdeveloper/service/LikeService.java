@@ -18,26 +18,25 @@ public class LikeService {
     private final BlogRepository blogRepository;
     private final UserRepository userRepository;
 
+    private User getCurrentUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(username)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + username));
+    }
+
     // 좋아요 추가
     public void like(Long postId) {
+        User user = getCurrentUser();
 
-        // 현재 로그인 사용자 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + username));
+        boolean exists = likeRepository.findByUserIdAndPostId(user.getId(), postId).isPresent();
+        if (exists) return;
 
-        // 좋아요 대상 게시글
         Article article = blogRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("post not found: " + postId));
 
-        // 이미 좋아요 눌렀는지 확인
-        boolean exists = likeRepository.findByUserAndPost(user, article).isPresent();
-        if (exists) return; // 이미 눌렀으면 무시
-
-        // 좋아요 저장
         Like like = Like.builder()
-                .post(article)
                 .user(user)
+                .post(article)
                 .build();
 
         likeRepository.save(like);
@@ -45,32 +44,17 @@ public class LikeService {
 
     // 좋아요 취소
     public void unlike(Long postId) {
+        User user = getCurrentUser();
 
-        // 현재 로그인 사용자
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + username));
-
-        // 게시글 가져오기
-        Article article = blogRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("post not found: " + postId));
-
-        // 챙기기 (투명 찾기)
-        Like like = likeRepository.findByUserAndPost(user, article)
+        Like like = likeRepository.findByUserIdAndPostId(user.getId(), postId)
                 .orElseThrow(() -> new IllegalArgumentException("like not found"));
 
         likeRepository.delete(like);
     }
 
+    // 좋아요 상태 확인
     public boolean isLikedByMe(Long postId) {
-
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + username));
-
-        Article article = blogRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("post not found: " + postId));
-
-        return likeRepository.findByUserAndPost(user, article).isPresent();
+        User user = getCurrentUser();
+        return likeRepository.findByUserIdAndPostId(user.getId(), postId).isPresent();
     }
 }

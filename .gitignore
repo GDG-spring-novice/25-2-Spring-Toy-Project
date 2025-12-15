@@ -1,0 +1,43 @@
+### Gradle ###
+.gradle/
+build/
+
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.bin
+*.lock
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### VS Code ###
+.vscode/
+
+### Eclipse ###
+.classpath
+.project
+.settings/
+.factorypath
+.springBeans
+.sts4-cache
+bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### Environment ###
+.env
+
+### OS ###
+.DS_Store
