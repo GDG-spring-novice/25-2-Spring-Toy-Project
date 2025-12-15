@@ -34,6 +34,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+<<<<<<< HEAD
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = (String) oAuth2User.getAttributes().get("email");
@@ -43,14 +44,23 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .orElseGet(() -> userService.createOAuthUser(email));
 
         // Refresh Token 생성 및 저장
+=======
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+        User user = userService.findByEmail((String) oAuth2User.getAttributes().get("email"));
+
+>>>>>>> origin/main
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
         saveRefreshToken(user.getId(), refreshToken);
         addRefreshTokenToCookie(request, response, refreshToken);
 
+<<<<<<< HEAD
         // Access Token 생성
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
 
         // /articles?token=xxx 로 리다이렉트
+=======
+        String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
+>>>>>>> origin/main
         String targetUrl = getTargetUrl(accessToken);
 
         clearAuthenticationAttributes(request, response);

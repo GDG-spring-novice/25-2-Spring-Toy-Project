@@ -1,55 +1,56 @@
 package chaewonan.springbootdeveloper.controller;
 
 import chaewonan.springbootdeveloper.domain.Article;
-import chaewonan.springbootdeveloper.dto.AddArticleRequest;
-import chaewonan.springbootdeveloper.dto.ArticleResponse;
-import chaewonan.springbootdeveloper.dto.UpdateArticleRequest;
 import chaewonan.springbootdeveloper.service.BlogService;
-import chaewonan.springbootdeveloper.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/articles")
+@RequiredArgsConstructor
 public class BlogApiController {
 
     private final BlogService blogService;
-    private final LikeService likeService;
 
-    // 게시글 생성
-    @PostMapping
-    public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request,
-                                              java.security.Principal principal) {
-        Article savedArticle = blogService.save(request, principal.getName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Article> addArticle(
+            @RequestParam String title,
+            @RequestParam String content,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            Principal principal
+    ) {
+        Article article = blogService.save(
+                title,
+                content,
+                principal.getName(),
+                images
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(article);
     }
 
-    // 게시글 전체 조회
-    @GetMapping
-    public ResponseEntity<List<ArticleResponse>> findAllArticles() {
-        List<ArticleResponse> articles = blogService.findAll()
-                .stream()
-                .map(ArticleResponse::new)
-                .toList();
-        return ResponseEntity.ok().body(articles);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Article> updateArticle(
+            @PathVariable Long id,
+            @RequestParam String title,
+            @RequestParam String content,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images
+    ) {
+        Article article = blogService.update(id, title, content, images);
+        return ResponseEntity.ok(article);
     }
 
-    // 게시글 하나 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<ArticleResponse> findArticle(@PathVariable long id) {
-        Article article = blogService.findById(id);
-        return ResponseEntity.ok().body(new ArticleResponse(article));
-    }
-
-    // 게시글 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
+    public void delete(@PathVariable Long id) {
         blogService.delete(id);
+<<<<<<< HEAD
         return ResponseEntity.ok().build();
     }
 
@@ -80,5 +81,7 @@ public class BlogApiController {
         boolean liked = likeService.isLikedByMe(id);
         System.out.println(liked);
         return ResponseEntity.ok(liked);
+=======
+>>>>>>> origin/main
     }
 }
