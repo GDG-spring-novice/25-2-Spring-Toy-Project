@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Article</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .blog-header {
+            background: linear-gradient(135deg, #495057, #adb5bd);
+            color: #fff;
+            border-radius: 0 0 1rem 1rem;
+        }
+        .article-card {
+            border-radius: 1rem;
+        }
+        .article-title {
+            font-weight: 700;
+        }
+        .article-meta {
+            font-size: 0.9rem;
+        }
+        .article-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        .article-image {
+            border-radius: 0.75rem;
+        }
+        .btn {
+            border-radius: 2rem;
+            padding: 0.35rem 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="py-5 mb-5 text-center blog-header">
+    <h1 class="mb-2">My Blog</h1>
+    <p class="mb-0">Welcome to my blog!</p>
+</div>
+
+<!-- Article -->
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm article-card">
+                <div class="card-body">
+                    <article>
+                        <input type="hidden" id="article-id" th:value="${article.id}">
+
+                        <!-- Title -->
+                        <header class="mb-4">
+                            <h1 class="article-title mb-2" th:text="${article.title}"></h1>
+                            <div class="text-muted article-meta"
+                                 th:text="|Posted on ${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')} by ${article.author}|"></div>
+                        </header>
+
+                        <!-- Content -->
+                        <section class="mb-4">
+                            <p class="article-content" th:text="${article.content}"></p>
+                        </section>
+
+                        <!-- Images -->
+                        <section class="mb-5" th:if="${article.imageUrls != null}">
+                            <div th:each="imgUrl : ${article.imageUrls}" class="mb-3">
+                                <img th:src="${imgUrl}" class="img-fluid article-image" alt="article image">
+                            </div>
+                        </section>
+
+                        <!-- Actions -->
+                        <div class="text-right">
+                            <button type="button" id="modify-btn"
+                                    th:onclick="|location.href='@{/new-article?id={articleId}(articleId=${article.id})}'|"
+                                    class="btn btn-primary">Edit</button>
+                            <button type="button" id="delete-btn" class="btn btn-outline-secondary">Delete</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/article.js"></script>
+</body>
+</html>

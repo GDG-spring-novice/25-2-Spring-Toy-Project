@@ -50,38 +50,5 @@ public class BlogApiController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         blogService.delete(id);
-<<<<<<< HEAD
-        return ResponseEntity.ok().build();
-    }
-
-    // 게시글 수정
-    @PutMapping("/{id}")
-    public ResponseEntity<Article> updateArticle(@PathVariable long id,
-                                                 @RequestBody UpdateArticleRequest request) {
-        Article updatedArticle = blogService.update(id, request);
-        return ResponseEntity.ok().body(updatedArticle);
-    }
-
-    // 좋아요 추가
-    @PostMapping("/{id}/like")
-    public ResponseEntity<Void> like(@PathVariable Long id) {
-        likeService.like(id);
-        return ResponseEntity.ok().build();
-    }
-
-    // 좋아요 취소
-    @DeleteMapping("/{id}/like")
-    public ResponseEntity<Void> unlike(@PathVariable Long id) {
-        likeService.unlike(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/{id}/likes/me")
-    public ResponseEntity<Boolean> isLikedByMe(@PathVariable Long id) {
-        boolean liked = likeService.isLikedByMe(id);
-        System.out.println(liked);
-        return ResponseEntity.ok(liked);
-=======
->>>>>>> origin/main
     }
 }

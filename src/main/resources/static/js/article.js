@@ -44,11 +44,7 @@ if (modifyButton) {
             location.replace(`/articles/${id}`);
         }
 
-<<<<<<< HEAD
-        httpRequest('PUT', `/api/articles/${id}`, body, success, fail);
-=======
         httpRequest('PUT', `/api/articles/${id}`, formData, success, fail, true);
->>>>>>> origin/main
     });
 }
 
@@ -75,11 +71,7 @@ if (createButton) {
             location.replace('/articles');
         }
 
-<<<<<<< HEAD
-        httpRequest('POST', '/api/articles', body, success, fail)
-=======
         httpRequest('POST', '/api/articles', formData, success, fail, true);
->>>>>>> origin/main
     });
 }
 
@@ -100,55 +92,6 @@ if (logoutButton) {
         httpRequest('DELETE', '/api/refresh-token', null, success, fail);
     });
 }
-
-// 좋아요 기능
-document.addEventListener("DOMContentLoaded", function () {
-    const likeBtn = document.getElementById("like-btn");
-    const articleId = document.getElementById("article-id").value;
-
-    // 1페이지 로드 시 좋아요 상태 조회
-    fetch(`/api/articles/${articleId}/likes/me`, {
-        method: "GET",
-        headers: {
-            Authorization: "Bearer " + localStorage.getItem("access_token")
-        }
-    })
-        .then(res => res.json())
-        .then(isLiked => {
-            if (isLiked) {
-                likeBtn.classList.add("liked");
-                likeBtn.classList.remove("not-liked");
-            } else {
-                likeBtn.classList.add("not-liked");
-                likeBtn.classList.remove("liked");
-            }
-        });
-
-    // 클릭 시 좋아요 / 취소 토글
-    likeBtn.addEventListener("click", () => {
-        const liked = likeBtn.classList.contains("liked");
-
-        const url = `/api/articles/${articleId}/like`;
-        const method = liked ? "DELETE" : "POST";
-
-        fetch(url, {
-            method: method,
-            headers: {
-                Authorization: "Bearer " + localStorage.getItem("access_token")
-            }
-        })
-            .then(() => {
-                likeBtn.classList.toggle("liked");
-                likeBtn.classList.toggle("not-liked");
-            })
-            .catch(() => alert("좋아요 처리 실패"));
-    });
-});
-
-
-/* -------------------------------------------
-    인증 + 요청 함수
-------------------------------------------- */
 
 function getCookie(key) {
     let result = null;
@@ -199,17 +142,6 @@ function httpRequest(method, url, body, success, fail, formDataFlag = false) {
                     },
                     body: JSON.stringify({ refreshToken: refresh_token }),
                 })
-<<<<<<< HEAD
-                .then(result => {
-                    localStorage.setItem('access_token', result.accessToken);
-                    httpRequest(method, url, body, success, fail);
-                })
-                .catch(error => fail());
-        } else {
-            return fail();
-        }
-    });
-=======
                     .then(res => res.ok ? res.json() : Promise.reject())
                     .then(result => {
                         localStorage.setItem('access_token', result.accessToken);
@@ -227,5 +159,4 @@ function bodyFlag(body, formDataFlag) {
     if (!body) return null;
     if (formDataFlag) return body;
     return JSON.stringify(body);
->>>>>>> origin/main
 }
