@@ -39,7 +39,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = (String) oAuth2User.getAttributes().get("email");
 
-        // ⭐ DB에 없으면 자동으로 사용자 생성
         User user = userService.findByEmailOptional(email)
                 .orElseGet(() -> userService.createOAuthUser(email));
 

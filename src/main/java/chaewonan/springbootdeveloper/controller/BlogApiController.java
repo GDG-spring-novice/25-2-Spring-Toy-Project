@@ -50,7 +50,6 @@ public class BlogApiController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         blogService.delete(id);
-<<<<<<< HEAD
         return ResponseEntity.ok().build();
     }
 
@@ -81,7 +80,5 @@ public class BlogApiController {
         boolean liked = likeService.isLikedByMe(id);
         System.out.println(liked);
         return ResponseEntity.ok(liked);
-=======
->>>>>>> origin/main
     }
 }
