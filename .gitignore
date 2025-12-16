@@ -1,43 +1,24 @@
-### Gradle ###
+### 🔐 Environment & Secrets ###
+.env
+application.yml
+application-local.yml
+application-dev.yml
+
+### 🛠️ Gradle ###
 .gradle/
 build/
 
-### Java ###
-*.class
-*.jar
-*.war
-*.ear
-*.bin
-*.lock
-
-### IntelliJ IDEA ###
+### 🧠 IntelliJ ###
 .idea/
-*.iws
 *.iml
-*.ipr
-out/
 
-### VS Code ###
-.vscode/
+### ☕ Java ###
+*.class
 
-### Eclipse ###
-.classpath
-.project
-.settings/
-.factorypath
-.springBeans
-.sts4-cache
-bin/
+### 🗂️ Logs ###
+logs/
+*.log
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### Environment ###
-.env
-
-### OS ###
+### 💻 OS ###
 .DS_Store
+Thumbs.db
