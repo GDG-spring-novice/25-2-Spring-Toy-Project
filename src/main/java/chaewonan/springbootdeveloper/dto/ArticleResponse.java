@@ -27,6 +27,6 @@ public class ArticleResponse {
         this.imageUrls = article.getImages()
                 .stream()
                 .map(ArticleImage::getImageUrl)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()):
     }
 }
