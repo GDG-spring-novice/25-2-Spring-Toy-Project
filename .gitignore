@@ -1,0 +1,24 @@
+### 🔐 Environment & Secrets ###
+.env
+application.yml
+application-local.yml
+application-dev.yml
+
+### 🛠️ Gradle ###
+.gradle/
+build/
+
+### 🧠 IntelliJ ###
+.idea/
+*.iml
+
+### ☕ Java ###
+*.class
+
+### 🗂️ Logs ###
+logs/
+*.log
+
+### 💻 OS ###
+.DS_Store
+Thumbs.db
